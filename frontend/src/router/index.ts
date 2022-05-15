@@ -1,19 +1,17 @@
-import { createRouter, createWebHistory } from "vue-router"
-import SongList from '../views/SongList.vue'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-const router = createRouter({
-	history: createWebHistory(),
-	routes: [
-		{
-			path: "/",
-			name: "SongList",
-			component: SongList
-		}
-	]
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    component: () => import("../views/SongList.vue")
+  },
+  {
+    path: '/admin',
+    component: () => import("../views/Admin.vue")
+  }
+]
+
+export default createRouter({
+  history: createWebHistory(),
+  routes
 })
-
-// router.beforeEach((to, from, next) => {
-// 	next()
-// })
-
-export default router

@@ -1,11 +1,14 @@
 .vscode
 
 node_modules
+backend/src/pwd.js
+backend/.env
 .DS_Store
 dist
 dist-ssr
 *.local
-.zip
+*.zip
 
 package-lock.json
+pnpm-lock.yaml
 yarn.lock

@@ -1,74 +1,51 @@
 <template>
-  <div class="header">
-    <Header :dataList="songList" @searchMode="changeSearchMode"></Header>
+  <div class="h-5% min-h-50px">
+    <SongListHeader :searchMode="isSearchMode" @setSearchMode="setSearchMode"></SongListHeader>
   </div>
-  <div class="songs_list" ref="songListContainer">
-    <div class="songlist_all" :class="{ ml: searchMode }">
-      <SongTable :dataList="songList" :tableHeight="containerHeight"></SongTable>
+  <!-- 不加 overflow-y-scroll 会出现右侧滚动条   改成 hidden 的话最后一条数据会在太下面显示不出  好像是因为表头的原因 神奇 -->
+  <div class="flex w-100% h-93% max-h-93% overflow-x-hidden overflow-y-scroll" ref="tableContainer">
+    <div
+      class="w-100% transition-all duration-500 ease flex-shrink-0"
+      :class="{ '-ml-100%': isSearchMode }"
+    >
+      <SongsTable :songs="songlist.songlist" :tableHeight="tableHeight + 'px'"></SongsTable>
     </div>
-    <div class="songlist_searched">
-      <SongTable :dataList="searchedList" :tableHeight="containerHeight"></SongTable>
+    <div class="w-100% transition-all duration-500 ease flex-shrink-0">
+      <SongsTable :songs="songlist.searchedList" :tableHeight="tableHeight + 'px'"></SongsTable>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue'
-import { commonGet } from '../api'
-import { useRect } from '../composables/useRect'
-import { Debounced } from '../utils/index'
-import SongTable from '../components/SongTable.vue'
-import Header from '../components/Header.vue'
-import { useStore } from 'vuex'
-import type { StateProps, TableData } from '../store'
+import { onMounted, ref, watch } from 'vue'
+import { useSongStore } from '~/store/songTable'
+import { useResizeObserver, refDebounced } from '@vueuse/core'
+import { getSongList } from '../composables/getSongList'
+import SongListHeader from '../components/SongListHeader.vue'
+import SongsTable from '../components/SongsTable.vue'
 
-const store = useStore<StateProps>()
+const songlist = useSongStore()
 
-const searchedList = computed(() => store.getters.getSonglistSearched)
-
-let searchMode = ref<boolean>(false)
-const changeSearchMode = (val: boolean) => {
-  searchMode.value = val
+const isSearchMode = ref(false)
+const setSearchMode = (val: boolean) => {
+  isSearchMode.value = val
 }
 
-let songList = ref<TableData[]>([])
-commonGet('/getSongList', {}).then(res => {
-  console.log(res)
-  songList.value = res as TableData[]
-  store.commit('setLoading', false)
-  getTableRect()
+const tableContainer = ref<HTMLDivElement | null>(null)
+let tableHeight = ref<number>(0)
+
+let resizeHeight = ref(0)
+tableHeight = refDebounced(resizeHeight, 1000)
+watch(tableHeight, () => {
+  console.log(tableHeight.value)
 })
 
-const songListContainer = ref<HTMLDivElement>()
-let containerHeight = ref<string>('100%')
-const getTableRect = () => {
-  containerHeight.value = useRect(songListContainer).height.toString() + 'px'
-  console.log(containerHeight.value)
-}
 onMounted(() => {
-  window.onresize = Debounced.use(getTableRect, 500, true)
+  tableHeight.value = tableContainer.value!.clientHeight
+  getSongList()
+  useResizeObserver(tableContainer, entries => {
+    const entry = entries[0]
+    resizeHeight.value = entry.contentRect.height
+  })
 })
 </script>
-
-<style>
-.header {
-  /* width: 100%; */
-  height: 8vh;
-  background-color: #a8a0fa;
-}
-.songs_list {
-  width: 200%;
-  overflow-x: hidden;
-  height: 92vh;
-  /* background-color: rgb(207, 59, 195); */
-  display: flex;
-}
-.songlist_all,
-.songlist_searched {
-  width: 50%;
-  transition: all 0.3s ease;
-}
-.ml {
-  margin-left: -50%;
-}
-</style>

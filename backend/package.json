@@ -15,6 +15,8 @@
     "dotenv": "^10.0.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
+    "koa-json-error": "^3.1.2",
+    "koa-jwt": "^4.0.3",
     "koa-router": "^10.1.1",
     "mysql2": "^2.3.3-rc.0"
   },

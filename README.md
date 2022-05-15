@@ -1,14 +1,22 @@
 # qiyuan-songlist
 
 这是一个为[栖苑太困辽](https://space.bilibili.com/303246676)制作的简单的歌曲列表展示页面
+
 ↑↑↑ 来点关注来点关注！！
 
-整体和之前做的[Noko-songlist](https://github.com/FangDingli/noko-songlist)差不多，这次只是自己把后端和部署的活也干了
+整体和之前做的[Noko-songlist](https://github.com/FangDingli/noko-songlist)差不多（嗷现在好像差的有点多了）。
 
-前端基于 Vue3+Vite+Naive-UI+Typescript 开发
-后端基于Koa2+MySQL（第一次写后端）
+前端基于 Vue3 + Vite + Naive-ui + TypeScript 开发
+后端基于Koa2+MySQL（后续考虑去掉数据库，直接使用json文件。 或者直接去掉后台部署到github）
 
-感谢 [vite-ts-quick](https://github.com/pohunchn/vite-ts-quick) 提供的前端模板
+新版加入 [vueuse](https://github.com/vueuse/vueuse) + [unocss](https://github.com/unocss/unocss) + [Iconify](https://github.com/iconify/iconify) 重构，并加入后台管理页 (我超，这么多 [Anthony Fu](https://github.com/antfu) 大神的项目，我的超人)
+
+写这玩意前：Atomic css 这玩意谁用？  反正我不用
+写这玩意后：真香！
+
+新版感谢 [vitesse-lite](https://github.com/antfu/vitesse-lite) 提供的前端 start template
+
+旧版感谢 [vite-ts-quick](https://github.com/pohunchn/vite-ts-quick) 提供的前端 start template
 
 ## 主要实现特性：
 
