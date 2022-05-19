@@ -1,5 +1,5 @@
 <template>
-  <div class="<sm:w-100% w-80% mx-auto h-100%">
+  <div class="lt-sm:w-100% w-80% mx-auto h-100%">
     <NDataTable
       :columns="createColumn()"
       :data="songs"
@@ -33,7 +33,7 @@ const createColumn = (): DataTableColumns<ISongInfo> => {
   let colarr: DataTableColumns<ISongInfo> = [
     {
       title: '歌名',
-      key: 'original_name',
+      key: 'displayName',
     },
     {
       title: '歌手',

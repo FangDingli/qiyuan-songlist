@@ -6,7 +6,10 @@ const baseRequest = createFetch({
   baseUrl: appBaseUrl,
   fetchOptions: {
     mode: 'cors',
-    credentials: 'omit'
+    credentials: 'omit',
+    headers: {
+      'Content-Type': 'application/json',
+    }
   }
 })
 

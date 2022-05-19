@@ -18,6 +18,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
+import { useMessage } from 'naive-ui'
 import { useSongStore } from '~/store/songTable'
 import { useResizeObserver, refDebounced } from '@vueuse/core'
 import { getSongList } from '../composables/getSongList'
@@ -41,6 +42,7 @@ watch(tableHeight, () => {
 })
 
 onMounted(() => {
+  window.$message = useMessage()
   tableHeight.value = tableContainer.value!.clientHeight
   getSongList()
   useResizeObserver(tableContainer, entries => {

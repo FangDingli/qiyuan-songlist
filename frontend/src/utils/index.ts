@@ -18,3 +18,9 @@ export const shuffle = (arr: []): [] => {
 
   return arr
 }
+
+export const getToken = () => localStorage.getItem('token')
+
+export const setToken = (token: string) => {
+  localStorage.setItem('token', token)
+}

@@ -7,11 +7,13 @@
 整体和之前做的[Noko-songlist](https://github.com/FangDingli/noko-songlist)差不多（嗷现在好像差的有点多了）。
 
 前端基于 Vue3 + Vite + Naive-ui + TypeScript 开发
+
 后端基于Koa2+MySQL（后续考虑去掉数据库，直接使用json文件。 或者直接去掉后台部署到github）
 
 新版加入 [vueuse](https://github.com/vueuse/vueuse) + [unocss](https://github.com/unocss/unocss) + [Iconify](https://github.com/iconify/iconify) 重构，并加入后台管理页 (我超，这么多 [Anthony Fu](https://github.com/antfu) 大神的项目，我的超人)
 
 写这玩意前：Atomic css 这玩意谁用？  反正我不用
+
 写这玩意后：真香！
 
 新版感谢 [vitesse-lite](https://github.com/antfu/vitesse-lite) 提供的前端 start template

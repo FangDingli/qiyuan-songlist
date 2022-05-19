@@ -12,21 +12,22 @@ class ListController {
     const songInfo = ctx.request.body
     const result = await listService.create(songInfo)
     if (result[0].warningStatus !== 0) ctx.throw(500)
-    ctx.body = '操作成功'
+    ctx.body = {code:200,message:'操作成功'}
   }
 
   async updateSongInfo(ctx) {
     const songInfo = ctx.request.body
     const result = await listService.updateSongInfo(songInfo)
     if (result[0].warningStatus !== 0) ctx.throw(500)
-    ctx.body = '操作成功'
+    ctx.body = {code:200,message:'操作成功'}
   }
 
   async deleteSong(ctx) {
-    const { id } = ctx.request.query
+	console.log(ctx.request.query)
+    const { id } = ctx.request.params
     const result = await listService.deleteSong(id)
     if (result[0].warningStatus !== 0) ctx.throw(500)
-    ctx.body = '操作成功'
+    ctx.body = {code:200,message:'操作成功'}
   }
 
   async queryLanguageDict(ctx) {

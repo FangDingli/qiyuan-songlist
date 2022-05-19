@@ -19,20 +19,13 @@ export const useSongStore = defineStore('songTable', () => {
     searchedList.value = list
   }
 
-  let adminSearchedList = ref<ISongInfo[]>([])
-  const setAdminSearchedList = (list: ISongInfo[]) => {
-    adminSearchedList.value = list
+  let isTokenVerified = ref(false)
+  const setTokenVeri = (param: boolean) => {
+    isTokenVerified.value = param
   }
 
-  let adminEditList = ref<ISongInfo[]>([])
-  const addAdminEditList = (list: ISongInfo[]) => {
-    adminEditList.value = list
-  }
-
-  return { songlist, setSonglist, tableLoading, setTableLoading, searchedList, setSearchedList }
+  return { songlist, setSonglist, tableLoading, setTableLoading, searchedList, setSearchedList, isTokenVerified, setTokenVeri }
 })
-
-export const useSongAdminStore = defineStore('songAdmin', () => { })
 
 export const useSonginfoStore = defineStore('songInfo', () => {
 

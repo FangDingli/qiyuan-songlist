@@ -13,7 +13,7 @@ listRouter.post("/songList", auth, ListController.addSong)
 
 listRouter.put("/songList", auth, ListController.updateSongInfo)
 
-listRouter.delete("/songList", auth, ListController.deleteSong)
+listRouter.delete("/songList/:id", auth, ListController.deleteSong)
 
 listRouter.get("/languageDict", ListController.queryLanguageDict)
 

@@ -10,7 +10,10 @@ class UserController {
     } else {
       ctx.throw(401, '用户名或密码错误')
     }
-
+  }
+  
+  async checkToken(ctx) {
+    ctx.body = ''
   }
 }
 
