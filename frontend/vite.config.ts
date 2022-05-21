@@ -1,5 +1,6 @@
 import path from 'path'
 import { defineConfig } from 'vite'
+import { visualizer } from "rollup-plugin-visualizer"
 import Vue from '@vitejs/plugin-vue'
 import Unocss from 'unocss/vite'
 
@@ -24,9 +25,9 @@ export default defineConfig({
   },
   plugins: [
     Vue(),
-
     // https://github.com/antfu/unocss
     // see unocss.config.ts for config
     Unocss(),
+    visualizer()
   ],
 })

@@ -12,6 +12,7 @@
     "@vueuse/core": "^8.5.0",
     "naive-ui": "^2.28.4",
     "pinia": "^2.0.14",
+    "rollup-plugin-visualizer": "^5.6.0",
     "vue": "^3.2.33",
     "vue-router": "4"
   },

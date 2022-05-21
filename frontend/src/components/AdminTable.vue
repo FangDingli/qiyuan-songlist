@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useSongStore, useSonginfoStore } from '~/store/songTable'
+import { useSonginfoStore } from '~/store/songTable'
 import { NDataTable, NTag, NButton, NInput, NSelect } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { h, toRefs, ref } from 'vue'
@@ -18,32 +18,15 @@ const props = withDefaults(
   defineProps<{
     needVirtualScroll?: boolean
     songs: ISongInfo[]
-    tableHeight?: number | string
     editTable?: boolean
   }>(),
   {
     needVirtualScroll: true,
-    tableHeight: '100%',
     editTable: false,
   }
 )
 
-const { songs, tableHeight } = toRefs(props)
-
-let checkedKeys: number[] = []
-const handleSelection = (rowkeys: number[]) => {
-  checkedKeys = rowkeys
-}
-const addCheckedToEdit = () => {
-  let addSongs: ISongInfo[] = []
-  checkedKeys.forEach(item => {
-    addSongs.push(songs.value.find(n => n.id === item)!)
-  })
-  addSongsToEditTable(addSongs)
-}
-const addSongsToEditTable = (songs: ISongInfo[]) => {
-  emits('addSongsToEditTable', songs)
-}
+const { songs } = toRefs(props)
 
 let columns = ref<DataTableColumns<ISongInfo>>([])
 
@@ -193,8 +176,4 @@ if (!props.editTable) {
     },
   ]
 }
-
-defineExpose({
-  addCheckedToEdit,
-})
 </script>

@@ -57,7 +57,7 @@ const handleSearch = () => {
     let resultList: ISongInfo[] = []
     const searchReg = new RegExp(inputVal.value, 'i')
     songlist.songlist.forEach(item => {
-      if (searchReg.test(item.original_name) || searchReg.test(item.singer)) {
+      if (searchReg.test(item.displayName!) || searchReg.test(item.singer)) {
         resultList.push(item)
       }
     })

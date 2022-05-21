@@ -39,6 +39,8 @@ export const getLanguageDict = async () => {
     item.label = item.language
   })
 
+  data.value.sort((a: ISongLanguage, b: ISongLanguage) => a.sortNum - b.sortNum)
+
   songInfoStore.setLanguageList(data.value)
 }
 
@@ -53,6 +55,9 @@ export const getKeywordDict = async () => {
     item.value = item.keyword
     item.label = item.keyword
   })
+
+  data.value.sort((a: ISongkeyword, b: ISongkeyword) => a.sortNum - b.sortNum)
+
   songInfoStore.setKeywordList(data.value)
 }
 

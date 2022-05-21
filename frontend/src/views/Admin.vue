@@ -73,34 +73,36 @@
             @keyup.enter="handleSearch"
           ></NInput>
         </div>
-        <!-- <div class="mt-6">
-          <NButton strong secondary type="info" @click="originTable.addCheckedToEdit()"
-            >加入编辑区</NButton
-          >
-        </div> -->
         <div class="mt-6">
-          <NButton type="primary">新增歌曲</NButton>
+          <NButton type="primary" @click="addSongModalComp.modalShow = true">新增歌曲</NButton>
         </div>
       </div>
       <div class="w-50%"></div>
     </div>
   </div>
+  <AddSongModal
+    ref="addSongModalComp"
+    :languageOptions="songInfo.languageDict"
+    :keywordOptions="songInfo.keywordDict"
+  ></AddSongModal>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
 import { NButton, useMessage, NInput, NSelect, useDialog } from 'naive-ui'
-import { useResizeObserver, refDebounced } from '@vueuse/core'
 import baseRequest from '~/utils/request'
 import AdminTable from '../components/AdminTable.vue'
+import AddSongModal from '../components/AddSongModal.vue'
 import { useSongStore, useSonginfoStore } from '~/store/songTable'
 import { getAllData } from '../composables/getSongList'
 import { getToken } from '../utils'
 import type { ISongInfo } from '~/type'
+import { useRouter } from 'vue-router'
 
 const songlist = useSongStore()
 const songInfo = useSonginfoStore()
 const dialog = useDialog()
+const router = useRouter()
 
 const originTable = ref()
 
@@ -108,6 +110,8 @@ window.$message = useMessage()
 const message = useMessage()
 
 let editableList = ref<ISongInfo[]>([])
+
+const addSongModalComp = ref()
 
 let editSelectLoading = ref(false)
 let editKeywordsSelect = ref<string[]>([])
@@ -149,6 +153,9 @@ const uploadEditTable = () => {
         .json()
       if (error.value) {
         message.error(data.value.status + ' ' + data.value.message, { duration: 5000 })
+        if (data.value.status == 401) {
+          router.push('/login')
+        }
       } else {
         message.success('操作成功', { duration: 3000 })
       }
@@ -188,6 +195,9 @@ const deleteSong = (song: ISongInfo) => {
         .json()
       if (error.value) {
         message.error(data.value.status + ' ' + data.value.message, { duration: 5000 })
+        if (data.value.status == 401) {
+          router.push('/login')
+        }
       } else {
         message.success('操作成功', { duration: 3000 })
       }
@@ -220,18 +230,7 @@ watch(inputVal, val => {
   }
 })
 
-/* const tableContainer = ref<HTMLDivElement | null>(null)
-let tableHeight = ref<number>(0)
-
-let resizeHeight = ref(0)
-tableHeight = refDebounced(resizeHeight, 1000) */
-
 onMounted(() => {
   getAllData()
-  /* tableHeight.value = tableContainer.value!.clientHeight
-  useResizeObserver(tableContainer, entries => {
-    const entry = entries[0]
-    resizeHeight.value = entry.contentRect.height
-  }) */
 })
 </script>

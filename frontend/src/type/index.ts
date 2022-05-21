@@ -1,5 +1,5 @@
 export interface ISongInfo {
-  id: number | string
+  id?: number | string
   displayName?: string
   original_name: string
   singer: string
