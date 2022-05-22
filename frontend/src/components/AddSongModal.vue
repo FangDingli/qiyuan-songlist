@@ -25,7 +25,7 @@
           <NSelect v-model:value="item.language" :options="languageOptions"></NSelect>
         </NFormItem>
         <NFormItem label="分类：">
-          <NSelect v-model:value="item.keyword" :options="keywordOptions" multiple></NSelect>
+          <NSelect v-model:value="item.editKeywords" :options="keywordOptions" multiple></NSelect>
         </NFormItem>
       </NForm>
     </NCard>

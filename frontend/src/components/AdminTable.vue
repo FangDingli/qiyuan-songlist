@@ -73,7 +73,7 @@ if (!props.editTable) {
               color: '#A9F',
               class: 'mr-1',
               onClick: () => {
-                addSongsToEditTable([row])
+                emits('addSongsToEditTable', [row])
               },
             },
             { default: () => '→' }
