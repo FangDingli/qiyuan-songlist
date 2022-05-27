@@ -4,9 +4,7 @@
 
 ↑↑↑ 来点关注来点关注！！
 
-
-
-
+我的bilibili: [归墟_丶](https://space.bilibili.com/23598218)
 
 适配移动端太麻烦了所以决定不适配了，再另外做一个（）
 
@@ -17,10 +15,6 @@
 ### 感谢以下开源项目
 
 - 初始模板：[vitesse-lite](https://github.com/antfu/vitesse-lite) Mocking up web app with <b>Vitesse</b><sup><em>(speed)</em></sup><br>
-
-
-
-
 - Framework：[Vue](https://github.com/vuejs/core) A Progressive JavaScript Framework
 - 工具集：[VueUse](https://github.com/vueuse/vueuse) Collection of essential Vue Composition Utilities 
 - 状态管理：[Pinia](https://github.com/vuejs/pinia) The Vue Store that you will enjoy using
