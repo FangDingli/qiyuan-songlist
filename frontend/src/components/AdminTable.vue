@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100%% h-100%">
+  <div class="w-100% h-100%">
     <NDataTable :columns="columns" :data="songs" :row-key="rowData => rowData.id"></NDataTable>
   </div>
 </template>

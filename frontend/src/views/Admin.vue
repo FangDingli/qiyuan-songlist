@@ -19,8 +19,24 @@
         </div>
       </div>
 
-      <div class="w-50% h-100%" ref="tableContainer">
+      <div class="w-50% h-100% overflow-y-scroll" ref="tableContainer">
         <AdminTable :songs="editableList" editTable></AdminTable>
+      </div>
+    </div>
+    <div class="h-10% flex">
+      <div class="w-50%">
+        <div class="w-50% mt-6">
+          <NInput
+            :placeholder="`编号、歌名、歌手名搜索，总歌曲数：${songlist.songlist.length}`"
+            v-model:value="inputVal"
+            @keyup.enter="handleSearch"
+          ></NInput>
+        </div>
+        <div class="mt-6">
+          <NButton type="primary" @click="addSongModalComp.modalShow = true">新增歌曲</NButton>
+        </div>
+      </div>
+      <div class="w-50%">
         <div class="flex">
           <NButton secondary type="info" class="mr-5 ml-5" @click="uploadEditTable"
             >确认提交</NButton
@@ -63,21 +79,6 @@
           >
         </div>
       </div>
-    </div>
-    <div class="h-10% flex">
-      <div class="w-50%">
-        <div class="w-50% mt-6">
-          <NInput
-            :placeholder="`编号、歌名、歌手名搜索，总歌曲数：${songlist.songlist.length}`"
-            v-model:value="inputVal"
-            @keyup.enter="handleSearch"
-          ></NInput>
-        </div>
-        <div class="mt-6">
-          <NButton type="primary" @click="addSongModalComp.modalShow = true">新增歌曲</NButton>
-        </div>
-      </div>
-      <div class="w-50%"></div>
     </div>
   </div>
   <AddSongModal
@@ -144,7 +145,7 @@ const uploadEditTable = () => {
             'Content-Type': 'application/json',
           }
           editableList.value.forEach(item => {
-            item.keyword = item.editKeywords.join(';')
+            item.keyword = item.editKeywords.join('；')
           })
           options.body = JSON.stringify(editableList.value)
         },
