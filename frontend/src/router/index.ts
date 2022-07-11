@@ -15,6 +15,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../views/Admin.vue")
   },
   {
+    path: '/act1',
+    component: () => import("../views/Act_1.vue")
+  },
+  {
     path: '/login',
     component: Login
   }
@@ -26,7 +30,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path == '/admin') {
+  if (to.path == '/admin' || to.path == '/act1') {
     const token = getToken()
     const store = useSongStore()
     if (!token) {

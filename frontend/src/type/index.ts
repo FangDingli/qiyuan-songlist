@@ -5,7 +5,8 @@ export interface ISongInfo {
   singer: string
   language?: string
   keyword?: string
-  editKeywords: string[]
+  editKeywords: string[],
+  sts: number
 }
 
 export interface ISongLanguage {
