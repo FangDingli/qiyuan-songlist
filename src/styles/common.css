@@ -1,0 +1,23 @@
+:root {
+  --bgi: url('/images/bgi-w-magic.jpg');
+  --color-1: 81, 109, 166;
+  --color-2: 136, 162, 242;
+  --color-3: 33, 28, 64;
+  --color-4: 242, 177, 171;
+  --color-5: 155, 68, 242;
+
+  --vp-c-brand: #00a98e;
+  --vp-c-brand-light: #4ad1b4;
+  --vp-c-brand-lighter: #78fadc;
+  --vp-c-brand-dark: #008269;
+  --vp-c-brand-darker: #005d47;
+  --vp-c-brand-next: #009ff7;
+}
+
+.rainbow_linear_text {
+  color: transparent;
+  background: -webkit-linear-gradient(120deg, var(--vp-c-brand) 30%, var(--vp-c-brand-next));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
