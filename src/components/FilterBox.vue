@@ -4,7 +4,9 @@ import {
   useFilterByLanguage,
   useFilterBySearchbar,
   useFilterByType,
+  afterFilter,
 } from '~/composables/useSongFilter'
+import { shuffle } from '~/utils'
 
 const songlistStore = useSonglistStore()
 
@@ -26,10 +28,14 @@ const handleRandomClick = () => {
   emit('random')
 }
 
+const handleShuffleClick = () => {
+  afterFilter(shuffle(songlistStore.originList.value))
+}
+
 watchDebounced(currActiveBtn, () => {
   if (currActiveBtn.value.length) {
     const isLanguage = songlistStore.songlistState.languageOpts.findIndex(
-      n => n === currActiveBtn.value
+      n => n === currActiveBtn.value,
     )
     if (isLanguage !== -1) {
       useFilterByLanguage(currActiveBtn.value)
@@ -68,7 +74,8 @@ defineExpose({
         @click="handleFilterBtnClick(item)"
       ></FilterButton>
     </div>
-    <div m="y-20px" grid="~ cols-[10fr_2fr] lt-sm:cols-[8fr_4fr] gap-4 lt-sm:gap-1">
+    <div m="y-20px" grid="~ cols-[2fr_10fr_2fr] lt-sm:cols-[4fr_8fr_4fr] gap-4 lt-sm:gap-1">
+      <FilterButton text="打乱顺序" @click="handleShuffleClick"></FilterButton>
       <input
         v-model.trim="searchValue"
         type="text"

@@ -60,8 +60,8 @@ export const useSonglistStore = createGlobalState(() => {
       listDisplay.value.push(
         ...songlistState.listAll.slice(
           (songlistState.pageNum - 1) * songlistState.pageSize,
-          songlistState.pageNum * songlistState.pageSize
-        )
+          songlistState.pageNum * songlistState.pageSize,
+        ),
       )
       songlistState.pageNum++
     }
@@ -92,7 +92,7 @@ export const useSonglistStore = createGlobalState(() => {
       const list: SongBaseTrait[] = []
       const typeOpts: string[] = []
       const languageOpts: string[] = []
-      rows.forEach((item, index) => {
+      rows.forEach(item => {
         item[3].split('；').forEach(ele => {
           if (ele.length) {
             const typeIndex = typeOpts.findIndex(n => n === ele)
@@ -106,7 +106,7 @@ export const useSonglistStore = createGlobalState(() => {
           languageOpts.push(item[2])
         }
         list.push({
-          index: index + 1,
+          // index: index + 1,
           title: item[0],
           singer: item[1],
           language: item[2],

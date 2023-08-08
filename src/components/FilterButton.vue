@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 interface Props {
-  isActive: boolean
+  isActive?: boolean
   text: string
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -14,8 +14,8 @@ const props = withDefaults(defineProps<Props>(), {
     class="h-36px flex-center transition b-rd-8px cursor-pointer fw-400 text-16px filter_btn"
     :style="
       props.isActive
-        ? 'background-color: rgb(var(--color-2))'
-        : 'background-color: rgba(var(--color-4), 0.8)'
+        ? 'background-color: rgba(var(--color-2), 0.6)'
+        : 'background-color: rgba(var(--color-4), 0.6)'
     "
   >
     {{ props.text }}
@@ -24,6 +24,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 <style scoped>
 .filter_btn:hover {
-  background-color: rgba(var(--color-2), 0.8) !important;
+  background-color: rgba(var(--color-2), 0.6) !important;
 }
 </style>

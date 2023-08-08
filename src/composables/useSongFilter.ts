@@ -6,7 +6,7 @@ export function arrRandChoice<T>(arr: Array<T>): T {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
-const afterFilter = (result: SongBaseTrait[]) => {
+export const afterFilter = (result: SongBaseTrait[]) => {
   songlistStore.songlistState.listAll = result
   songlistStore.songlistState.pageNum = 1
   songlistStore.listDisplay.value = []

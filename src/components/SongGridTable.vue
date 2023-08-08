@@ -55,7 +55,7 @@ defineExpose({
     </div>
     <div v-if="store.listDisplay.value.length">
       <div
-        v-for="item in store.listDisplay.value"
+        v-for="(item, index) in store.listDisplay.value"
         :key="item.title"
         grid="~ cols-[1fr_6fr_4fr_2fr_2fr_1fr] lt-sm:cols-[1fr_6fr_4fr_2fr] gap-2"
         text="16px"
@@ -63,7 +63,7 @@ defineExpose({
         class="m-y-1 p-y-1 transition song_item"
         @click="handleTableItemClick(item.title, item.singer)"
       >
-        <div class="pl-5%">{{ item.index }}</div>
+        <div class="pl-5%">{{ index + 1 }}</div>
         <div class="truncate">{{ item.title }}</div>
         <div class="truncate">{{ item.singer }}</div>
         <div class="sm:hidden md:hidden lg:hidden xl:hidden 2xl:hidden">

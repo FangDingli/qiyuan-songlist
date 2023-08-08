@@ -8,7 +8,7 @@ declare global {
   }
 
   interface SongBaseTrait {
-    index: number
+    index?: number
     title: string
     singer: string
     language: string
