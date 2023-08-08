@@ -9,3 +9,5 @@ node_modules
 *.log
 *.zip
 pnpm-lock.yaml
+yarn.lock
+package-lock.json
