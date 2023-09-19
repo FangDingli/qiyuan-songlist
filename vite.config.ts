@@ -1,6 +1,7 @@
 import path from 'path'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
+import VueMacros from 'unplugin-vue-macros/vite'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Unocss from 'unocss/vite'
@@ -28,7 +29,11 @@ export default defineConfig({
     },
   },
   plugins: [
-    Vue(),
+    VueMacros({
+      plugins: {
+        vue: Vue(),
+      },
+    }),
 
     // https://github.com/antfu/unocss
     // see unocss.config.ts for config

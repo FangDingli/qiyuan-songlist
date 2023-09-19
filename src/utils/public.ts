@@ -1,5 +1,9 @@
 export const currentTheme = ref<any>(null)
 
+export const setCurrentTheme = (theme: any) => {
+  currentTheme.value = theme
+}
+
 export const getToken = () => localStorage.getItem('qy-songlist-token')
 
 export const setToken = (token: string) => {

@@ -4,7 +4,7 @@ import { setToken } from '~/utils'
 
 const route = useRoute()
 const router = useRouter()
-const password = ref('')
+const password = $ref('')
 
 const { data, execute, isFetching, statusCode } = useRequest('/login', {
   immediate: false,
@@ -12,7 +12,7 @@ const { data, execute, isFetching, statusCode } = useRequest('/login', {
   .post(
     computed(() => ({
       username: 'admin',
-      password: password.value,
+      password: password,
     })),
   )
   .json()

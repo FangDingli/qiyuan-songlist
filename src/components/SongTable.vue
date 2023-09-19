@@ -3,7 +3,7 @@ import { useSonglistStore } from '~/store'
 
 const store = useSonglistStore()
 
-store.getSonglist()
+// store.getSonglist()
 </script>
 
 <template>
@@ -23,7 +23,7 @@ store.getSonglist()
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(item, index) in store.listDisplay.value" :key="index" class="color-4 song_item">
+      <tr v-for="(item, index) in store.listDisplay" :key="index" class="color-4 song_item">
         <td>
           <span>{{ item.title }}</span>
         </td>

@@ -8,36 +8,36 @@
 
 <script lang="ts" setup>
 import { darkTheme } from 'naive-ui'
-import { currentTheme } from '~/utils'
+import { currentTheme, setCurrentTheme } from '~/utils'
 import { useRequest } from '~/composables/useRequest'
 import type { UploadFileInfo } from 'naive-ui'
 
 const switchTheme = () => {
   if (currentTheme.value) {
-    currentTheme.value = null
+    setCurrentTheme(null)
   } else {
-    currentTheme.value = darkTheme
+    setCurrentTheme(darkTheme)
   }
 }
 
-let tableLoading = ref(false)
-let tableList = ref([])
-let tableListError = ref(false)
+let tableLoading = $ref(false)
+let tableList = $ref([])
+let tableListError = $ref(false)
 const getTableList = async () => {
-  tableLoading.value = true
+  tableLoading = true
   const { data, statusCode } = await useRequest('/fileList').get().json()
   if (statusCode.value === 200) {
-    tableList.value = data.value.data
+    tableList = data.value.data
   } else {
-    tableListError.value = true
+    tableListError = true
   }
-  tableLoading.value = false
+  tableLoading = false
 }
 
 getTableList()
 
-let uploadLoading = ref(false)
-let uploadFileList = ref<UploadFileInfo[]>([])
+let uploadLoading = $ref(false)
+let uploadFileList = $ref<UploadFileInfo[]>([])
 
 const handleFileUpload = async (options: {
   file: UploadFileInfo
@@ -45,7 +45,7 @@ const handleFileUpload = async (options: {
   event?: Event
 }) => {
   if (options.file.status === 'pending') {
-    uploadLoading.value = true
+    uploadLoading = true
     const formData = new FormData()
     formData.set('file', options.file.file!)
     const { statusCode } = await useRequest('/songlist').post(formData).json()
@@ -53,9 +53,9 @@ const handleFileUpload = async (options: {
       window.$message.success('上传成功')
       getTableList()
     }
-    uploadFileList.value = []
+    uploadFileList = []
 
-    uploadLoading.value = false
+    uploadLoading = false
   }
 }
 

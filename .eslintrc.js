@@ -49,6 +49,7 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'vue/attribute-hyphenation': 'off',
     'vue/v-on-event-hyphenation': 'off',
+    'vue/no-v-html': 'off',
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',

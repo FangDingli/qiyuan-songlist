@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BiliLink: typeof import('./src/components/BiliLink.vue')['default']
+    Danmaku: typeof import('./src/components/Danmaku.vue')['default']
     FilterBox: typeof import('./src/components/FilterBox.vue')['default']
     FilterButton: typeof import('./src/components/FilterButton.vue')['default']
     Head: typeof import('./src/components/Head.vue')['default']
@@ -17,6 +18,7 @@ declare module 'vue' {
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
     NDialogProvider: typeof import('naive-ui')['NDialogProvider']
     NEmpty: typeof import('naive-ui')['NEmpty']
+    NImage: typeof import('naive-ui')['NImage']
     NInput: typeof import('naive-ui')['NInput']
     NLayout: typeof import('naive-ui')['NLayout']
     NLayoutHeader: typeof import('naive-ui')['NLayoutHeader']

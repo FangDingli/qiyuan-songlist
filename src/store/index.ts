@@ -10,7 +10,7 @@ interface ThemeJson {
 }
 
 export const useThemeStore = createGlobalState(() => {
-  const theme = ref<ThemeJson>({
+  const theme = $ref<ThemeJson>({
     name: 'bgi-w-magic',
     color1: '#516DA6',
     color2: '#88A2F2',
@@ -51,13 +51,13 @@ export const useSonglistStore = createGlobalState(() => {
     lastUpdate: 'N/A',
   })
 
-  const listDisplay = ref<SongBaseTrait[]>([])
+  let listDisplay = $ref<SongBaseTrait[]>([])
 
-  const originList = ref<SongBaseTrait[]>([])
+  let originList = $ref<SongBaseTrait[]>([])
 
   const loadMore = () => {
-    if (songlistState.total && listDisplay.value.length < songlistState.total) {
-      listDisplay.value.push(
+    if (songlistState.total && listDisplay.length < songlistState.total) {
+      listDisplay.push(
         ...songlistState.listAll.slice(
           (songlistState.pageNum - 1) * songlistState.pageSize,
           songlistState.pageNum * songlistState.pageSize,
@@ -69,9 +69,9 @@ export const useSonglistStore = createGlobalState(() => {
 
   const resetSonglistAll = () => {
     // listDisplay.value = songlistState.listAll
-    songlistState.listAll = [...originList.value]
+    songlistState.listAll = [...originList]
     songlistState.pageNum = 1
-    listDisplay.value = []
+    listDisplay = []
     loadMore()
   }
 
@@ -115,13 +115,12 @@ export const useSonglistStore = createGlobalState(() => {
         })
       })
 
+      originList = [...list]
       songlistState.listAll = list
-      // listDisplay.value = list
-      // loadMore()
       songlistState.total = list.length
       songlistState.languageOpts = languageOpts
       songlistState.typeOpts = typeOpts
-      originList.value = list
+      // loadMore()
     }
 
     songlistState.isLoading = false

@@ -12,7 +12,7 @@ store.getSonglist()
   songs: () => [],
 }) */
 
-let copySource = ref<string>('')
+let copySource = $ref<string>('')
 
 const { copy, copied } = useClipboard({
   source: copySource,
@@ -21,7 +21,7 @@ const { copy, copied } = useClipboard({
 
 const handleTableItemClick = (name: string, singer: string) => {
   const temp = `点歌 ${name} ${singer}`
-  copySource.value = temp.length > 20 ? `点歌 ${name}` : temp
+  copySource = temp.length > 20 ? `点歌 ${name}` : temp
 
   copy()
 
@@ -53,9 +53,9 @@ defineExpose({
       <div class="self-center" lt-sm="hidden"><span class="">风格</span></div>
       <div class="self-center"><span class="">切片</span></div>
     </div>
-    <div v-if="store.listDisplay.value.length">
+    <div v-if="store.listDisplay.length">
       <div
-        v-for="(item, index) in store.listDisplay.value"
+        v-for="(item, index) in store.listDisplay"
         :key="item.title"
         grid="~ cols-[1fr_6fr_4fr_2fr_2fr_1fr] lt-sm:cols-[1fr_6fr_4fr_2fr] gap-2"
         text="16px"

@@ -10,17 +10,17 @@ import { shuffle } from '~/utils'
 
 const songlistStore = useSonglistStore()
 
-const currActiveBtn = ref<string>('')
+let currActiveBtn = $ref<string>('')
 
-const searchValue = ref<string>('')
+const searchValue = $ref<string>('')
 
 const emit = defineEmits(['random'])
 
 const handleFilterBtnClick = (name: string) => {
-  if (!currActiveBtn.value.length || currActiveBtn.value !== name) {
-    currActiveBtn.value = name
+  if (!currActiveBtn.length || currActiveBtn !== name) {
+    currActiveBtn = name
   } else {
-    currActiveBtn.value = ''
+    currActiveBtn = ''
   }
 }
 
@@ -29,26 +29,24 @@ const handleRandomClick = () => {
 }
 
 const handleShuffleClick = () => {
-  afterFilter(shuffle(songlistStore.originList.value))
+  afterFilter(shuffle(songlistStore.originList))
 }
 
-watchDebounced(currActiveBtn, () => {
-  if (currActiveBtn.value.length) {
-    const isLanguage = songlistStore.songlistState.languageOpts.findIndex(
-      n => n === currActiveBtn.value,
-    )
+watchDebounced($$(currActiveBtn), () => {
+  if (currActiveBtn.length) {
+    const isLanguage = songlistStore.songlistState.languageOpts.findIndex(n => n === currActiveBtn)
     if (isLanguage !== -1) {
-      useFilterByLanguage(currActiveBtn.value)
+      useFilterByLanguage(currActiveBtn)
     } else {
-      useFilterByType(currActiveBtn.value)
+      useFilterByType(currActiveBtn)
     }
   } else {
     useFilterBySearchbar('')
   }
 })
 
-watchDebounced(searchValue, () => {
-  useFilterBySearchbar(searchValue.value)
+watchDebounced($$(searchValue), () => {
+  useFilterBySearchbar(searchValue)
 })
 
 defineExpose({

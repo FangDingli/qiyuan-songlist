@@ -3,32 +3,33 @@ import { useSonglistStore } from '~/store'
 import type SongGridTable from '../components/SongGridTable.vue'
 import type FilterBox from '../components/FilterBox.vue'
 import { arrRandChoice } from '~/composables/useSongFilter'
+import Danmaku from '../components/Danmaku.vue'
 
 const store = useSonglistStore()
 
-let scrollElement = ref<HTMLElement | null>(null)
+let scrollElement = $ref<HTMLElement | null>(null)
 
-const songGridComp = ref<InstanceType<typeof SongGridTable>>()
+const songGridComp = $ref<InstanceType<typeof SongGridTable>>()
 
 const handleRandomClick = () => {
-  songGridComp.value?.handleRandomClick()
+  songGridComp?.handleRandomClick()
 }
 
 useInfiniteScroll(
-  scrollElement,
+  $$(scrollElement),
   () => {
-    if (scrollElement.value && store.songlistState.total > 0) {
+    if (scrollElement && store.songlistState.total > 0) {
       store.loadMore()
     }
   },
-  { distance: 100 }
+  { distance: 100 },
 )
 
 const triggerInfiniteScroll = (trigger: boolean) => {
   if (trigger) {
-    scrollElement.value = document.getElementById('scrollContainer')?.firstChild as HTMLElement
+    scrollElement = document.getElementById('scrollContainer')?.firstChild as HTMLElement
   } else {
-    scrollElement.value = null
+    scrollElement = null
   }
 }
 
@@ -52,25 +53,25 @@ const setCurrentTheme = () => {
 }
 
 watch(
-  () => store.listDisplay.value.length,
+  () => store.listDisplay.length,
   () => {
     console.log('store.listDisplay.value.length')
     // DOM节点过多后这个动画会导致页面卡顿严重
-    if (store.listDisplay.value.length >= 400) {
+    if (store.listDisplay.length >= 400) {
       const htmlRoot = document.getElementsByTagName('html')[0]
       htmlRoot.style.animation = 'none'
     }
     // 触底后依然在无限触发 useInfiniteScroll
-    if (store.listDisplay.value.length >= store.songlistState.listAll.length) {
+    if (store.listDisplay.length >= store.songlistState.listAll.length) {
       triggerInfiniteScroll(false)
     } else {
       triggerInfiniteScroll(true)
     }
-  }
+  },
 )
 
-const filterBoxComp = ref<InstanceType<typeof FilterBox>>()
-const currActiveBtn = computed(() => filterBoxComp.value?.currActiveBtn)
+const filterBoxComp = $ref<InstanceType<typeof FilterBox>>()
+const currActiveBtn = $computed(() => filterBoxComp?.currActiveBtn)
 
 onMounted(() => {
   setCurrentTheme()
@@ -79,6 +80,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <Danmaku></Danmaku>
   <NScrollbar id="scrollContainer" class="min-h-full songlist_main_container">
     <div pos="fixed lt-sm:absolute z-2 top-20px left-20px">
       <BiliLink></BiliLink>

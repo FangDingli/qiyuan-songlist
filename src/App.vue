@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { darkTheme, useOsTheme } from 'naive-ui'
-import { currentTheme } from '~/utils'
+import { currentTheme, setCurrentTheme } from '~/utils'
 
 const osThemeRef = useOsTheme()
-currentTheme.value = osThemeRef.value === 'light' ? null : darkTheme
+setCurrentTheme(osThemeRef.value === 'light' ? null : darkTheme)
 
-let homePageStyle: HTMLStyleElement | undefined
+/* let homePageStyle: HTMLStyleElement | undefined
 
 const updateHomePageStyle = (value: boolean) => {
   if (value) {
@@ -25,7 +25,7 @@ const updateHomePageStyle = (value: boolean) => {
   }
 }
 
-/* watch(
+watch(
   () => location.pathname,
   () => updateHomePageStyle(location.pathname === '/'),
   { immediate: true }
@@ -37,7 +37,6 @@ const updateHomePageStyle = (value: boolean) => {
     <NConfigProvider class="h-full" :theme="currentTheme">
       <NaiveProvider>
         <RouterView></RouterView>
-        <!-- <Index></Index> -->
       </NaiveProvider>
     </NConfigProvider>
   </Suspense>
