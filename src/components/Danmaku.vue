@@ -95,7 +95,7 @@ onMounted(() => {
       ref="danmakuComp"
       v-model:danmus="danmus"
       useSlot
-      class="w-full h-30vh top-0 left-0"
+      class="w-full h-30vh top-0 left-0 pointer-events-none"
       style="position: fixed"
     >
       <template #dm="{ danmu }">

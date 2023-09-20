@@ -53,9 +53,9 @@ defineExpose({
       <div class="self-center" lt-sm="hidden"><span class="">风格</span></div>
       <div class="self-center"><span class="">切片</span></div>
     </div>
-    <div v-if="store.listDisplay.length">
+    <div v-if="store.listDisplay.value.length">
       <div
-        v-for="(item, index) in store.listDisplay"
+        v-for="(item, index) in store.listDisplay.value"
         :key="item.title"
         grid="~ cols-[1fr_6fr_4fr_2fr_2fr_1fr] lt-sm:cols-[1fr_6fr_4fr_2fr] gap-2"
         text="16px"

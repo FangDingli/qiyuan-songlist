@@ -51,13 +51,13 @@ export const useSonglistStore = createGlobalState(() => {
     lastUpdate: 'N/A',
   })
 
-  let listDisplay = $ref<SongBaseTrait[]>([])
+  const listDisplay = ref<SongBaseTrait[]>([])
 
-  let originList = $ref<SongBaseTrait[]>([])
+  const originList = ref<SongBaseTrait[]>([])
 
   const loadMore = () => {
-    if (songlistState.total && listDisplay.length < songlistState.total) {
-      listDisplay.push(
+    if (songlistState.total && listDisplay.value.length < songlistState.total) {
+      listDisplay.value.push(
         ...songlistState.listAll.slice(
           (songlistState.pageNum - 1) * songlistState.pageSize,
           songlistState.pageNum * songlistState.pageSize,
@@ -69,9 +69,9 @@ export const useSonglistStore = createGlobalState(() => {
 
   const resetSonglistAll = () => {
     // listDisplay.value = songlistState.listAll
-    songlistState.listAll = [...originList]
+    songlistState.listAll = [...originList.value]
     songlistState.pageNum = 1
-    listDisplay = []
+    listDisplay.value = []
     loadMore()
   }
 
@@ -115,7 +115,7 @@ export const useSonglistStore = createGlobalState(() => {
         })
       })
 
-      originList = [...list]
+      originList.value = [...list]
       songlistState.listAll = list
       songlistState.total = list.length
       songlistState.languageOpts = languageOpts
