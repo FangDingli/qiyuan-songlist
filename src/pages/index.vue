@@ -107,7 +107,7 @@ onMounted(() => {
           href="https://space.bilibili.com/23598218"
           target="_blank"
           class="color-5 text-shadow-lg no-underline"
-          >Powerd by © 归墟丶 2023 - PRESENT</a
+          >Powerd by © 归墟丶 2022 - PRESENT</a
         >
       </div>
       <div class="m-y-10px text-18px text-center">
