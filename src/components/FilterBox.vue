@@ -29,7 +29,7 @@ const handleRandomClick = () => {
 }
 
 const handleShuffleClick = () => {
-  afterFilter(shuffle(songlistStore.originList))
+  afterFilter(shuffle(songlistStore.listDisplay.value))
 }
 
 watchDebounced($$(currActiveBtn), () => {

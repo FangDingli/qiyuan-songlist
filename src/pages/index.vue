@@ -53,16 +53,16 @@ const setCurrentTheme = () => {
 }
 
 watch(
-  () => store.listDisplay.length,
+  () => store.listDisplay.value.length,
   () => {
     console.log('store.listDisplay.value.length')
     // DOM节点过多后这个动画会导致页面卡顿严重
-    if (store.listDisplay.length >= 400) {
+    if (store.listDisplay.value.length >= 400) {
       const htmlRoot = document.getElementsByTagName('html')[0]
       htmlRoot.style.animation = 'none'
     }
     // 触底后依然在无限触发 useInfiniteScroll
-    if (store.listDisplay.length >= store.songlistState.listAll.length) {
+    if (store.listDisplay.value.length >= store.songlistState.listAll.length) {
       triggerInfiniteScroll(false)
     } else {
       triggerInfiniteScroll(true)
@@ -88,9 +88,9 @@ onMounted(() => {
     <div
       pos="fixed lt-sm:absolute z-2 top-20px right-20px"
       flex="~ col justify-center items-center"
-      class="color-4"
+      class="color-6"
     >
-      <a href="https://pome.ink/Wh7OjJyc" target="_blank" class="color-4">
+      <a href="https://pome.ink/Wh7OjJyc" target="_blank" class="color-6">
         <div i-uil-parking-square class="w-40px h-40px cursor-pointer"></div>
       </a>
 
