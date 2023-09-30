@@ -116,7 +116,6 @@ onMounted(() => {
         </div>
         <div
           v-if="danmu.type === 'richContent'"
-          class="p-y-4px p-x-15px"
           text="25px"
           style="background-color: rgba(0, 0, 0, 0.4)"
           :style="{ color: danmu.color }"

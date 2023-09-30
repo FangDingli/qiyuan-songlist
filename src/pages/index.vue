@@ -90,7 +90,7 @@ onMounted(() => {
       flex="~ col justify-center items-center"
       class="color-6"
     >
-      <a href="https://pome.ink/Wh7OjJyc" target="_blank" class="color-6">
+      <a href="https://pome.vip/Wh7OjJyc" target="_blank" class="color-6">
         <div i-uil-parking-square class="w-40px h-40px cursor-pointer"></div>
       </a>
 
