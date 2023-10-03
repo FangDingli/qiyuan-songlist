@@ -15,11 +15,12 @@ store.getSonglist()
 let copySource = $ref<string>('')
 
 const { copy, copied } = useClipboard({
-  source: copySource,
+  source: $$(copySource),
   legacy: true,
 })
 
 const handleTableItemClick = (name: string, singer: string) => {
+  console.log(name, singer)
   const temp = `点歌 ${name} ${singer}`
   copySource = temp.length > 20 ? `点歌 ${name}` : temp
 
