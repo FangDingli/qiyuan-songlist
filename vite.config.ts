@@ -18,8 +18,8 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/devServer': {
-        target: 'https://www.qiyuanyuan.live/songlistapi',
-        // target: 'http://localhost:8090/api',
+        // target: 'https://www.qiyuanyuan.live/songlistapi',
+        target: 'http://localhost:8090/api',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/devServer/, ''),
       },

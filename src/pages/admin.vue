@@ -62,6 +62,14 @@ const handleFileUpload = async (options: {
 const downloadFile = (name: string) => {
   window.open(`https://www.qiyuanyuan.live/songlistDownload/${name}`)
 }
+
+const userCookie = $ref('')
+const handleSaveUserCookie = async () => {
+  const { statusCode } = await useRequest('/savecookie').post({ userCookie }).json()
+  if (statusCode.value === 200) {
+    window.$message.success('上传成功')
+  }
+}
 </script>
 
 <template>
@@ -157,6 +165,16 @@ const downloadFile = (name: string) => {
               </NEmpty>
             </NTable>
           </NSpin>
+        </div>
+
+        <div class="mt-10">
+          <NP>归墟的B站登录凭证</NP>
+          <NInput
+            v-model:value="userCookie"
+            type="textarea"
+            placeholder="这里是给归墟用的，苑不用管。 第三方接口老是挂于是现在改成直接带登录凭证请求官方接口这样就保证稳定啦"
+          ></NInput>
+          <NButton class="mt-2" type="primary" @click="handleSaveUserCookie">保存</NButton>
         </div>
       </div>
     </NThing>

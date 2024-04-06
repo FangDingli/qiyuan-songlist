@@ -137,7 +137,7 @@ interface Status {
 export const useStatusStore = createGlobalState(() => {
   const state = reactive<Status>({
     liveStatus: 0,
-    avatarImg: 'https://i1.hdslb.com/bfs/face/b8a3c1b5a1882d2eb186a49b361a5e4524c9ef36.jpg',
+    avatarImg: '//i1.hdslb.com/bfs/face/41705f9e4c99c2e950e2082ce07ba0e9bad208b3.jpg',
   })
 
   const getState = async () => {
