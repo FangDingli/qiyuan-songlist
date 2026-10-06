@@ -1,0 +1,104 @@
+/**
+ * 设计 token —— 布局与配色基调来自旧项目(E:\Frontend\Vue\qiyuan-songlist)。
+ * rgb 三元组写法便于 UnoCSS 以 rgb(var(--x) / alpha) 派生透明度。
+ *
+ * 主色 #AA99FF 对白底对比仅 2.4:1,因此派生了两个可读色:
+ * --brand-strong:小字文字用(浅色模式取深紫、暗色模式取浅紫,均满足 AA)
+ * --on-brand:印在品牌紫填充上的文字色(深紫墨,替代旧版白字)
+ */
+:root {
+  --brand: 170 153 255; /* #AA99FF */
+  --brand-strong: 112 80 232; /* #7050E8,白底对比 5.2:1 */
+  --on-brand: 30 27 58; /* #1E1B3A,紫底上对比 5.5:1 */
+
+  --bg-base: 238 234 255; /* #EEEAFF 淡紫页面底 */
+  --bg-card: 255 255 255;
+  --text-primary: 45 45 68; /* #2D2D44,对比 ~12:1 */
+  --text-secondary: 107 107 131; /* #6B6B83 */
+  --border: 229 227 242; /* #E5E3F2 */
+
+  --error: 255 77 79;
+
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
+
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.dark {
+  --brand-strong: 186 171 255; /* #BABFFF,#1E1E30 底上对比 ~6:1 */
+
+  --bg-base: 22 22 35; /* #161623 带紫调深底 */
+  --bg-card: 30 30 48; /* #1E1E30 */
+  --text-primary: 245 243 255;
+  --text-secondary: 178 175 200;
+  --border: 45 45 68; /* #2D2D44 */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 22px;
+  color: rgb(var(--text-primary));
+  background: rgb(var(--bg-base));
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.3s var(--ease-in-out);
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+/* 浏览器默认给 <button>/<input> 画 outset/inset 边框,UnoCSS preflight 不重置它们,必须显式清掉 */
+button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+input {
+  border: 0;
+}
+
+/* 同理,UnoCSS preflight 不重置标题/段落的默认外边距(1em),全部清零,间距由工具类控制 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Toast 进出场 */
+.toast-enter-active,
+.toast-leave-active {
+  transition:
+    opacity 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out);
+}
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.toast-move {
+  transition: transform 0.2s var(--ease-out);
+}
