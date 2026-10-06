@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, statSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, statSync, existsSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import XLSX from 'xlsx'
@@ -8,9 +8,16 @@ const LANGUAGE_ALIAS = {
   英文: '英语',
 }
 
-const input = process.argv[2]
+/** 默认读取根目录下的 songlist.xlsx,也可传入其他路径: npm run convert -- <excel路径> */
+const DEFAULT_INPUT = 'songlist.xlsx'
+
+const input = process.argv[2] ?? DEFAULT_INPUT
 if (!input) {
-  console.error('用法:npm run convert -- <excel文件路径>')
+  console.error('用法:npm run convert -- <excel文件路径>(缺省读取根目录 songlist.xlsx)')
+  process.exit(1)
+}
+if (!existsSync(input)) {
+  console.error(`找不到文件:${input}`)
   process.exit(1)
 }
 
