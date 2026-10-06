@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useElementSize, useWindowSize, useWindowScroll } from '@vueuse/core'
 import rawText from '@/data/songs.json?raw'
 import type { Song, SonglistData } from '@/types'
 import { formatOrder, siteConfig } from '@/config'
 import SongCard from '@/components/SongCard.vue'
 import FilterPanel from '@/components/FilterPanel.vue'
+import MobileFilterBar from '@/components/MobileFilterBar.vue'
 import RotatingDisc from '@/components/RotatingDisc.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { useToast } from '@/composables/useToast'
@@ -32,8 +33,8 @@ const themeTitle = computed(() =>
 )
 
 const keyword = ref('')
-const selectedLanguages = ref(new Set<string>())
-const selectedGenres = ref(new Set<string>())
+// 单选筛选:全局最多选中一个 tag,再点同款取消,点其他替换
+const selectedTag = ref<{ kind: 'language' | 'genre'; name: string } | null>(null)
 
 // 打乱:每次点击重新生成一次全量随机序,之后随筛选增删顺序保持稳定
 const shuffled = ref(false)
@@ -63,32 +64,28 @@ const tags = computed(() => [
 
 const filtered = computed(() => {
   const kw = keyword.value.trim().toLowerCase()
-  const langs = selectedLanguages.value
-  const genreSel = selectedGenres.value
+  const sel = selectedTag.value
   const list = songs.filter((song) => {
     if (kw && !song.title.toLowerCase().includes(kw) && !song.artist.toLowerCase().includes(kw)) return false
-    if (langs.size && !langs.has(song.language)) return false
-    if (genreSel.size && !song.genres.some((g) => genreSel.has(g))) return false
+    if (sel) {
+      if (sel.kind === 'language' ? song.language !== sel.name : !song.genres.includes(sel.name)) return false
+    }
     return true
   })
   if (!shuffled.value) return list
   return [...list].sort((a, b) => (randomRank.value.get(a.id) ?? 0) - (randomRank.value.get(b.id) ?? 0))
 })
 
-const hasActiveFilters = computed(
-  () => keyword.value.trim() !== '' || selectedLanguages.value.size > 0 || selectedGenres.value.size > 0,
-)
+const hasActiveFilters = computed(() => keyword.value.trim() !== '' || selectedTag.value !== null)
 
 function toggleTag(kind: 'language' | 'genre', name: string) {
-  const set = kind === 'language' ? selectedLanguages.value : selectedGenres.value
-  if (set.has(name)) set.delete(name)
-  else set.add(name)
+  const cur = selectedTag.value
+  selectedTag.value = cur && cur.kind === kind && cur.name === name ? null : { kind, name }
 }
 
 function clearFilters() {
   keyword.value = ''
-  selectedLanguages.value = new Set()
-  selectedGenres.value = new Set()
+  selectedTag.value = null
 }
 
 function shuffle() {
@@ -99,6 +96,8 @@ function shuffle() {
   }
   randomRank.value = new Map(ids.map((id, idx) => [id, idx]))
   shuffled.value = true
+  // 瞬时回顶:列表整体换血,平滑滚动反而拖沓
+  window.scrollTo(0, 0)
 }
 
 async function orderSong(song: Song) {
@@ -145,6 +144,33 @@ const visibleRows = computed(() => {
   return rows.value.slice(firstVisible.value, firstVisible.value + count)
 })
 
+const showBackTop = computed(() => scrollY.value > winH.value * 0.6)
+
+function backToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+/* ---------- 移动端紧凑筛选条:滚过原面板且向上滑动时出现 ---------- */
+const MOBILE_BAR_TOP = 52 // 移动端吸顶栏高度
+
+const mobilePanelRef = ref<HTMLElement | null>(null)
+const lastScrollY = ref(0)
+const scrollingUp = ref(false)
+
+watch(scrollY, (y) => {
+  const delta = y - lastScrollY.value
+  if (Math.abs(delta) > 2) scrollingUp.value = delta < 0
+  lastScrollY.value = y
+})
+
+const mobilePanelOutOfView = computed(() => {
+  void scrollY.value
+  const el = mobilePanelRef.value
+  return el ? el.getBoundingClientRect().bottom < MOBILE_BAR_TOP : false
+})
+
+const showMobileBar = computed(() => mobilePanelOutOfView.value && scrollingUp.value)
+
 async function randomPick() {
   const pool = filtered.value
   if (!pool.length) {
@@ -155,11 +181,6 @@ async function randomPick() {
   const ok = await copy(formatOrder(song))
   show(ok ? `选中《${song.title}》,口令已复制` : '复制失败,请手动复制', ok ? 'success' : 'error')
   highlightId.value = song.id
-  // 选中卡可能未被虚拟滚动渲染,直接按行列号算出目标位置滚动
-  const idx = pool.indexOf(song)
-  const rowIdx = Math.floor(idx / cols.value)
-  const base = gridRef.value ? gridRef.value.getBoundingClientRect().top + window.scrollY : 0
-  window.scrollTo({ top: Math.max(0, base + rowIdx * ROW_H - winH.value / 2 + CARD_H / 2), behavior: 'smooth' })
   setTimeout(() => {
     if (highlightId.value === song.id) highlightId.value = null
   }, 4000)
@@ -168,7 +189,8 @@ async function randomPick() {
 
 <template>
   <!-- 固定背景层:position:fixed 不随页面滚动。
-       背景图在 src/config.ts 的 siteConfig.backgroundImages 里配置,移动端与宽屏各一张 -->
+       背景图在 src/config.ts 的 siteConfig.backgroundImages 里配置,移动端与宽屏各一张;
+       过渡层(bg-scrim)半透明叠在图上柔化背景,亮暗模式各自取色 -->
   <div class="fixed inset-0 -z-10 bg-bg-base" aria-hidden="true">
     <img
       v-if="siteConfig.backgroundImages.mobile"
@@ -182,6 +204,7 @@ async function randomPick() {
       class="hidden w-full h-full object-cover lg:block"
       alt=""
     />
+    <div class="absolute inset-0 bg-[rgb(var(--bg-scrim)/var(--bg-scrim-a))] backdrop-blur-4px"></div>
   </div>
 
   <div class="min-h-screen">
@@ -219,8 +242,7 @@ async function randomPick() {
             <FilterPanel
               v-model:keyword="keyword"
               :tags="tags"
-              :selected-languages="selectedLanguages"
-              :selected-genres="selectedGenres"
+              :selected-tag="selectedTag"
               :shuffled="shuffled"
               :total="songs.length"
               :filtered-count="filtered.length"
@@ -233,13 +255,12 @@ async function randomPick() {
       </aside>
 
       <main ref="mainEl" class="flex-1 min-w-0">
-        <!-- 移动端筛选区 -->
-        <div class="lg:hidden mb-16px surface-card p-16px">
+        <!-- 移动端筛选区:普通文档流,滚出视口后由紧凑吸顶条接管 -->
+        <div ref="mobilePanelRef" class="lg:hidden mb-16px surface-card p-16px">
           <FilterPanel
             v-model:keyword="keyword"
             :tags="tags"
-            :selected-languages="selectedLanguages"
-            :selected-genres="selectedGenres"
+            :selected-tag="selectedTag"
             :shuffled="shuffled"
             :total="songs.length"
             :filtered-count="filtered.length"
@@ -248,6 +269,22 @@ async function randomPick() {
             @random="randomPick"
           />
         </div>
+
+        <!-- 移动端紧凑筛选条:向下滚动隐藏,向上滑动出现 -->
+        <Transition name="bar">
+          <div
+            v-if="showMobileBar"
+            class="lg:hidden fixed left-0 right-0 z-40 bg-[rgb(var(--bg-card)/0.95)] backdrop-blur-xl border-b border-border"
+            :style="{ top: `${MOBILE_BAR_TOP}px` }"
+          >
+            <MobileFilterBar
+              v-model:keyword="keyword"
+              :tags="tags"
+              :selected-tag="selectedTag"
+              @toggle-tag="toggleTag"
+            />
+          </div>
+        </Transition>
 
         <!-- 虚拟滚动网格:外层撑起总高度,内层按滚动位置平移 -->
         <div
@@ -312,6 +349,19 @@ async function randomPick() {
         </footer>
       </main>
     </div>
+
+    <!-- 回到顶部:滚动超过一屏后出现 -->
+    <Transition name="toast">
+      <button
+        v-if="showBackTop"
+        type="button"
+        class="back-to-top"
+        title="回到顶部"
+        @click="backToTop"
+      >
+        <div class="i-carbon-arrow-up"></div>
+      </button>
+    </Transition>
 
     <!-- Toast -->
     <div

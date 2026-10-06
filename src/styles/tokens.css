@@ -13,6 +13,11 @@
 
   --bg-base: 238 234 255; /* #EEEAFF 淡紫页面底 */
   --bg-card: 255 255 255;
+
+  /* 背景图过渡层:叠在背景图与内容之间,颜色与 bg-base 同源,
+     暗色模式取更深的底色且透明度更高(压得更暗) */
+  --bg-scrim: 238 234 255;
+  --bg-scrim-a: 0.5;
   --text-primary: 45 45 68; /* #2D2D44,对比 ~12:1 */
   --text-secondary: 107 107 131; /* #6B6B83 */
   --border: 229 227 242; /* #E5E3F2 */
@@ -32,6 +37,9 @@
 
   --bg-base: 22 22 35; /* #161623 带紫调深底 */
   --bg-card: 30 30 48; /* #1E1E30 */
+
+  --bg-scrim: 14 14 24; /* 略深于 bg-base,压暗背景图 */
+  --bg-scrim-a: 0.6;
   --text-primary: 245 243 255;
   --text-secondary: 178 175 200;
   --border: 45 45 68; /* #2D2D44 */
@@ -85,6 +93,27 @@ blockquote,
 dl,
 dd {
   margin: 0;
+}
+
+/* 移动端紧凑筛选条进出场:下滑淡出收起,上滑滑入淡显 */
+.bar-enter-active,
+.bar-leave-active {
+  transition:
+    transform var(--motion-mid) var(--ease-out),
+    opacity var(--motion-mid) var(--ease-out);
+}
+.bar-enter-from,
+.bar-leave-to {
+  opacity: 0;
+  transform: translateY(-110%);
+}
+
+/* 隐藏横向滚动条(紧凑筛选条用) */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Toast 进出场 */

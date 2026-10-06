@@ -33,13 +33,12 @@ export default defineConfig({
     // 主题切换按钮
     'theme-toggle':
       'flex-center w-32px h-32px rounded-lg bg-brand-soft text-brand-strong text-16px cursor-pointer transition-opacity duration-200 hover:opacity-80',
-    // 主操作:品牌紫填充 + 深紫墨文字(对比 5.5:1)
-    'btn-primary':
-      'flex-center gap-8px h-40px px-16px rounded-xl bg-brand text-on-brand text-14px font-bold cursor-pointer select-none whitespace-nowrap transition-all duration-200 shadow-[0_4px_14px_rgb(var(--brand)/0.35)] hover:opacity-90 active:scale-95',
-    // 次操作:淡紫软底
+    // 软底按钮:页面上的同级操作(打乱顺序/随机点歌)
     'btn-soft':
       'flex-center gap-8px h-40px px-16px rounded-xl bg-brand-soft text-brand-strong text-14px font-bold cursor-pointer select-none whitespace-nowrap transition-all duration-200 hover:opacity-80 active:scale-95',
-    'btn-soft-active': 'bg-brand text-on-brand',
+    // 回到顶部按钮
+    'back-to-top':
+      'fixed right-16px bottom-24px z-50 flex-center w-40px h-40px rounded-full bg-[rgb(var(--bg-card)/0.9)] backdrop-blur-xl border border-border text-brand-strong text-18px cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.15)] transition-colors duration-200 hover:(text-brand border-brand)',
     // 筛选标签:无边框,灰底未选中 / 品牌紫实底选中
     'tag-pill':
       'inline-flex items-center h-30px px-12px rounded-lg text-13px font-medium cursor-pointer select-none whitespace-nowrap transition-colors duration-200 bg-[rgb(var(--text-primary)/0.06)] text-text-secondary hover:text-brand-strong',

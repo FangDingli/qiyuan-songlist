@@ -13,3 +13,10 @@ export interface SonglistData {
   updatedAt: string
   songs: Song[]
 }
+
+/** 筛选 tag:kind 区分语种/类型两个维度 */
+export interface FilterTag {
+  name: string
+  count: number
+  kind: 'language' | 'genre'
+}

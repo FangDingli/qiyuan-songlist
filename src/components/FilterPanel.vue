@@ -1,18 +1,11 @@
 <script setup lang="ts">
 import TagPill from './TagPill.vue'
-
-export interface FilterTag {
-  name: string
-  count: number
-  kind: 'language' | 'genre'
-}
+import type { FilterTag } from '@/types'
 
 defineProps<{
   keyword: string
   tags: FilterTag[]
-  selectedLanguages: Set<string>
-  selectedGenres: Set<string>
-  shuffled: boolean
+  selectedTag: { kind: FilterTag['kind']; name: string } | null
   total: number
   filteredCount: number
 }>()
@@ -41,11 +34,11 @@ const emit = defineEmits<{
     </div>
 
     <div class="flex gap-10px">
-      <button type="button" class="btn-soft flex-1" :class="{ 'btn-soft-active': shuffled }" @click="emit('shuffle')">
+      <button type="button" class="btn-soft flex-1" @click="emit('shuffle')">
         <div class="i-carbon-shuffle text-15px"></div>
         打乱顺序
       </button>
-      <button type="button" class="btn-primary flex-1" @click="emit('random')">
+      <button type="button" class="btn-soft flex-1" @click="emit('random')">
         <div class="i-carbon-face-add text-15px"></div>
         随机点歌
       </button>
@@ -61,7 +54,7 @@ const emit = defineEmits<{
         :key="tag.kind + tag.name"
         :label="tag.name"
         :count="tag.count"
-        :selected="(tag.kind === 'language' ? selectedLanguages : selectedGenres).has(tag.name)"
+        :selected="!!selectedTag && selectedTag.kind === tag.kind && selectedTag.name === tag.name"
         @toggle="emit('toggleTag', tag.kind, tag.name)"
       />
     </div>
