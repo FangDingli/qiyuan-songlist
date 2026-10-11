@@ -54,6 +54,9 @@ const selectedTag = ref<{ kind: 'language' | 'genre'; name: string } | null>(nul
 // 打乱:每次点击重新生成一次全量随机序,之后随筛选增删顺序保持稳定
 const shuffled = ref(false)
 const randomRank = ref(new Map<number, number>())
+// 打乱动画:网格短暂进入 shuffling 状态,卡片带错峰抖动入场
+const shuffling = ref(false)
+let shuffleTimer: ReturnType<typeof setTimeout> | undefined
 
 const highlightId = ref<number | null>(null)
 
@@ -113,6 +116,10 @@ function shuffle() {
   shuffled.value = true
   // 瞬时回顶:列表整体换血,平滑滚动反而拖沓
   window.scrollTo(0, 0)
+  // 播放一轮错峰抖动动画,表现随机感
+  shuffling.value = true
+  clearTimeout(shuffleTimer)
+  shuffleTimer = setTimeout(() => (shuffling.value = false), 900)
 }
 
 async function orderSong(song: Song) {
@@ -311,6 +318,7 @@ async function randomPick() {
           v-if="filtered.length"
           ref="gridRef"
           class="relative"
+          :class="{ 'grid-shuffling': shuffling }"
           :style="{ height: `${rows.length * ROW_H}px` }"
         >
           <div
@@ -327,6 +335,7 @@ async function randomPick() {
                 v-for="(song, ci) in row"
                 :key="song.id"
                 :song="song"
+                :style="{ '--i': (ri * 2 + ci) % 8 }"
                 :no="(firstVisible + ri) * cols + ci + 1"
                 :highlighted="song.id === highlightId"
                 @order="orderSong"
@@ -349,21 +358,20 @@ async function randomPick() {
 
         <footer class="text-center px-16px pt-8px pb-32px text-12px text-text-secondary">
           <p>
-            制作
             <a
               href="https://space.bilibili.com/23598218"
               target="_blank"
               rel="noopener noreferrer"
               class="text-brand-strong hover:underline underline-offset-2px"
             >归墟丶</a>
-            · 鸣谢
+            · UI
             <a
               href="https://space.bilibili.com/94843915"
               target="_blank"
               rel="noopener noreferrer"
               class="text-brand-strong hover:underline underline-offset-2px"
             >来只奶茶</a>
-            (页面整体布局与 UI) · 由 GLM-5.3-Flash 编写
+            · with GLM-5.3-Flash
           </p>
           <p class="mt-4px">{{ dataMeta }}</p>
         </footer>

@@ -116,6 +116,31 @@ dd {
   display: none;
 }
 
+/* 打乱顺序:卡片错峰抖动入场,表现随机感(--i 为错峰序号) */
+.grid-shuffling .song-card {
+  animation: card-shuffle 0.5s var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+@keyframes card-shuffle {
+  0% {
+    opacity: 0.3;
+    transform: translateY(-12px) rotate(-2deg) scale(0.95);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(3px) rotate(1deg) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grid-shuffling .song-card {
+    animation: none;
+  }
+}
+
 /* Toast 进出场 */
 .toast-enter-active,
 .toast-leave-active {

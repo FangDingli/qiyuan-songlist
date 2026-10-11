@@ -45,7 +45,7 @@ src/
 
 主通道(自动):远端 songs.json 由 CF Worker(`songs-cache`)缓存 5 天后从同源
 `/api/songs.json` 提供,页面挂载时拉取、`withIds` 替换内置数据,失败时静默保留。
-Worker 代码与路由配置见 README「数据更新流程」。
+Worker 代码与路由配置见 docs/deploy.md。
 
 兜底数据(手动):浏览器下载 qylive 的 songs.json → **原样覆盖** `src/data/songs.json`
 (零转换)→ 提交推送。仓库内该文件内容应与远端文件完全一致。
@@ -85,5 +85,5 @@ Worker 代码与路由配置见 README「数据更新流程」。
 - 背景层:`App.vue` 顶部的 `fixed inset-0 -z-10` 层,不随滚动;背景图配置在 `siteConfig.backgroundImages`(mobile/desktop 各一张)
 - 卡片语种/类型 tag 颜色:`SongCard.vue` 的 `TAG_PALETTE` 按 key 哈希稳定取色,新增语种/类型无需改动
 - 外链一律 `target="_blank" rel="noopener noreferrer"`;bilibili 图床加 `referrerpolicy="no-referrer"`
-- 观众在国内:部署走 Cloudflare Pages + 自定义域名(见 README 部署节),不要引入会被墙的运行时依赖
+- 观众在国内:部署走 Cloudflare Pages + 自定义域名(见 docs/deploy.md),不要引入会被墙的运行时依赖
 - 提交信息与代码注释用中文;`songs.json` 为生成物,不要手改
