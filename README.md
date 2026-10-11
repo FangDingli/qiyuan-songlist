@@ -25,6 +25,43 @@ npm run preview      # 本地预览构建产物
 - **手动(兜底)**:浏览器下载 `https://qylive.pages.dev/songs.json`,
   **原样覆盖** `src/data/songs.json`,提交推送即可,零转换。
 
+### 数据缓存 Worker 部署教程(一次性配置)
+
+作用:页面拉取同源 `/api/songs.json`,Worker 从 Cloudflare 内部抓取 qylive 的数据
+(CF 到 CF,不受 pages.dev 被墙影响),用 Cache API 缓存 5 天——每 5 天才回源一次,
+等效「5 天更新一次」,无需定时器。
+
+1. Cloudflare 控制台 → **Workers & Pages → Create → Worker**,命名 `songs-cache` → Deploy
+2. 点 **Edit code**,全选替换为以下代码后 Deploy:
+
+```js
+const UPSTREAM = 'https://qylive.pages.dev/songs.json'
+const CACHE_TTL = 432000 // 5 天(秒)
+
+export default {
+  async fetch(request, env, ctx) {
+    const cache = caches.default
+    let res = await cache.match(request)
+    if (!res) {
+      const upstream = await fetch(UPSTREAM)
+      if (!upstream.ok) return new Response('upstream error', { status: 502 })
+      res = new Response(upstream.body, upstream)
+      res.headers.set('Cache-Control', 'public, max-age=' + CACHE_TTL)
+      res.headers.set('Access-Control-Allow-Origin', '*')
+      ctx.waitUntil(cache.put(request, res.clone()))
+    }
+    return res
+  },
+}
+```
+
+3. 该 Worker 的 **Settings → Domains & Routes → Add Route**,区域选 `qiyuanyuan.live`,
+   路由填 `qiyuanyuan.live/api/songs.json`
+4. 验证:浏览器访问 `https://www.qiyuanyuan.live/api/songs.json`,能返回歌单 JSON 即成功;
+   页面此后加载时会自动使用该数据
+
+想立即刷新缓存:Worker 的 Deployments 里重新部署一次即可(旧缓存作废)。
+
 ## 部署(Cloudflare Pages)
 
 1. 把仓库推到 GitHub。
