@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, shallowRef, watch } from 'vue'
 import { useElementSize, useWindowSize, useWindowScroll } from '@vueuse/core'
 import rawText from '@/data/songs.json?raw'
 import type { Song, SonglistData } from '@/types'
 import { formatOrder, siteConfig } from '@/config'
+import { mapRemoteSongs } from '@/utils/mapRemoteSongs'
 import SongCard from '@/components/SongCard.vue'
 import FilterPanel from '@/components/FilterPanel.vue'
 import MobileFilterBar from '@/components/MobileFilterBar.vue'
@@ -12,7 +13,23 @@ import { useClipboard } from '@/composables/useClipboard'
 import { useToast } from '@/composables/useToast'
 import { useTheme } from '@/composables/useTheme'
 
-const { updatedAt, songs } = JSON.parse(rawText) as SonglistData
+// 内置数据:构建时打包,保证首屏瞬间渲染;挂载后异步拉取远端最新数据替换
+const bundled = JSON.parse(rawText) as SonglistData
+const songs = shallowRef<Song[]>(bundled.songs)
+const updatedAt = ref(bundled.updatedAt)
+
+onMounted(async () => {
+  // 远端数据经 CF Worker 缓存后从同源 /api/songs.json 提供,失败时静默保持内置数据
+  try {
+    const res = await fetch('/api/songs.json', { cache: 'no-cache' })
+    if (!res.ok) return
+    const mapped = mapRemoteSongs(await res.json())
+    songs.value = mapped.songs
+    updatedAt.value = mapped.updatedAt
+  } catch {
+    /* 拉取失败不影响页面,保留内置数据 */
+  }
+})
 
 const { copy } = useClipboard()
 const { toasts, show } = useToast()
@@ -45,7 +62,7 @@ const highlightId = ref<number | null>(null)
 /** 统计维度取值及数量,按数量降序 */
 function countBy(get: (s: Song) => string | string[]): Array<[string, number]> {
   const counter = new Map<string, number>()
-  for (const song of songs) {
+  for (const song of songs.value) {
     const keys = get(song)
     for (const key of Array.isArray(keys) ? keys : [keys]) {
       counter.set(key, (counter.get(key) ?? 0) + 1)
@@ -65,7 +82,7 @@ const tags = computed(() => [
 const filtered = computed(() => {
   const kw = keyword.value.trim().toLowerCase()
   const sel = selectedTag.value
-  const list = songs.filter((song) => {
+  const list = songs.value.filter((song) => {
     if (kw && !song.title.toLowerCase().includes(kw) && !song.artist.toLowerCase().includes(kw)) return false
     if (sel) {
       if (sel.kind === 'language' ? song.language !== sel.name : !song.genres.includes(sel.name)) return false
@@ -89,7 +106,7 @@ function clearFilters() {
 }
 
 function shuffle() {
-  const ids = songs.map((s) => s.id)
+  const ids = songs.value.map((s) => s.id)
   for (let i = ids.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[ids[i], ids[j]] = [ids[j], ids[i]]

@@ -62,9 +62,12 @@ function colorStyle(key: string) {
         <h3 class="min-w-0 text-16px lh-24px font-bold text-text-primary truncate" :title="song.title">
           {{ song.title }}
         </h3>
-        <span class="shrink-0 text-13px font-bold text-brand-strong tracking-wide">
-          {{ song.language }}
+      <div class="shrink-0 flex items-center gap-6px">
+        <span class="text-13px font-bold text-brand-strong tracking-wide">{{ song.language }}</span>
+        <span v-if="song.sc" class="text-12px font-bold text-error" :title="`点歌需要 ${song.sc} SC`">
+          {{ song.sc }} SC
         </span>
+      </div>
       </div>
       <div class="mt-8px flex items-center justify-between gap-8px">
         <p class="min-w-0 text-13px text-text-secondary truncate" :title="song.artist">{{ song.artist }}</p>

@@ -1,15 +1,17 @@
 export interface Song {
-  /** 编号,由转换脚本按 excel 行序生成 */
+  /** 编号,按当前数据的行序生成 */
   id: number
   title: string
   artist: string
   language: string
-  /** 类型,excel 中以「;」分隔的多值 */
+  /** 类型,「流行;苦情」等多值拆成数组 */
   genres: string[]
+  /** 点歌需要的 SuperChat 金额,无 SC 为 null */
+  sc: number | null
 }
 
 export interface SonglistData {
-  /** 数据文件的更新日期,来自 excel 的修改时间 */
+  /** 数据的更新日期 */
   updatedAt: string
   songs: Song[]
 }
@@ -19,4 +21,14 @@ export interface FilterTag {
   name: string
   count: number
   kind: 'language' | 'genre'
+}
+
+/** 远端(qylive)的单条歌曲原始结构 */
+export interface RemoteSong {
+  title?: unknown
+  singer?: unknown
+  lang?: unknown
+  genre?: unknown
+  style?: unknown
+  sc?: unknown
 }
