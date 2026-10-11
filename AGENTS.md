@@ -40,9 +40,19 @@ scripts/
                          # 「流行;苦情」拆成 genres 数组;excel 修改时间写为 updatedAt
 ```
 
-## 数据流程(约每月更新一次)
+## 数据流程
 
-主播提供 excel(表头固定:歌名/歌手/语种/类型)→ `npm run convert -- <路径>` → 提交 `src/data/songs.json` → 推送触发 Cloudflare Pages 自动部署。song 的 `id` 是 excel 行序号(1 起),是歌曲的稳定标识;页面上展示的编号与它无关(见「打乱与编号」)。
+数据主通道(自动):远端 qylive 的 songs.json 由 CF Worker(`songs-cache`)缓存 5 天后从同源
+`/api/songs.json` 提供,页面挂载时拉取、经 `src/utils/mapRemoteSongs.ts` 映射替换内置数据,
+失败时静默保留内置数据。Worker 代码与路由配置见 README「数据更新流程」。
+
+兜底数据(手动,约每月):浏览器下载 qylive 的 songs.json 放到根目录 → `npm run sync` →
+提交 `src/data/songs.json`。映射字段:singer→artist、lang→language、genre+style→genres(去重)、
+sc→数值;`id` 按行序生成,页面展示编号与其解耦(见「打乱与编号」)。
+
+遗留通道(应急):主播 excel(表头 歌名/歌手/语种/类型)→ `npm run convert -- <路径>`。
+
+`src/data/songs.json` 为生成物,不要手改。
 
 ## 设计系统(重要)
 

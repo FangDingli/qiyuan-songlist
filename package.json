@@ -7,7 +7,8 @@
     "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "convert": "node scripts/convert.mjs"
+    "convert": "node scripts/convert.mjs",
+    "sync": "node scripts/sync-remote.mjs"
   },
   "dependencies": {
     "@vueuse/core": "^15.0.0",

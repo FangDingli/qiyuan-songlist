@@ -3,3 +3,5 @@ dist/
 *.local
 .DS_Store
 *.xlsx
+/songs.json
+/remote-songs.json
