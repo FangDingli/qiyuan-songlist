@@ -14,21 +14,16 @@ npm install          # 安装依赖
 npm run dev          # 本地开发
 npm run build        # 类型检查 + 构建产物到 dist/
 npm run preview      # 本地预览构建产物
-npm run convert -- <excel路径>   # excel 转 JSON
 ```
 
-## 数据更新流程(约每月一次)
+## 数据更新流程
 
-1. 拿到主播的新 excel(表头固定为 **歌名 / 歌手 / 语种 / 类型**,顺序无所谓):
-   ```bash
-   npm run convert -- "songlist-2026-01-02 10_47_20.xlsx"
-   ```
-   脚本会:
-   - 按行序生成 `id` 作为编号(No.1、No.2……);
-   - 归一化语种写法(如「英文」→「英语」,映射表在 `scripts/convert.mjs` 顶部);
-   - 把「流行;苦情」这类多类型拆成数组;
-   - 把 excel 的修改时间写为 `updatedAt`,显示在页面侧栏。
-2. 提交并推送 `src/data/songs.json`,Cloudflare Pages 会自动重新部署。
+数据直接消费远端(qylive)原生结构,无需任何转换:
+
+- **自动(主通道)**:远端 songs.json 由 CF Worker `songs-cache` 缓存 5 天后从
+  同源 `/api/songs.json` 提供,页面挂载时自动拉取替换,失败时使用内置数据。
+- **手动(兜底)**:浏览器下载 `https://qylive.pages.dev/songs.json`,
+  **原样覆盖** `src/data/songs.json`,提交推送即可,零转换。
 
 ## 部署(Cloudflare Pages)
 
@@ -67,10 +62,10 @@ npm run convert -- <excel路径>   # excel 转 JSON
 ## 点歌口令格式
 
 在 `src/config.ts` 的 `siteConfig.orderTemplate` 里改,支持占位符
-`{title}` `{artist}` `{language}` `{genres}`,例如:
+`{title}` `{singer}` `{lang}` `{tags}`,例如:
 
 ```ts
-orderTemplate: '点歌 {title} {artist}'
+orderTemplate: '点歌 {title} {singer}'
 ```
 
 ## 代码结构
@@ -91,6 +86,4 @@ src/
     useToast.ts            # 全局提示
     useTheme.ts            # 亮暗主题(自动跟随系统 + 手动循环切换)
   styles/tokens.css        # 设计 token(改主题色在这里)
-scripts/
-  convert.mjs              # excel → songs.json 转换脚本
 ```

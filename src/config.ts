@@ -1,4 +1,5 @@
 import type { Song } from '@/types'
+import { songTags } from '@/utils/songs'
 
 /** 站点文案与点歌口令格式,按需修改 */
 export const siteConfig = {
@@ -12,14 +13,14 @@ export const siteConfig = {
     mobile: '/bg/mobile_v1.png',
     desktop: '/bg/desktop_v1.jpg',
   },
-  /** 可用占位符:{title} {artist} {language} {genres} */
-  orderTemplate: '点歌 {title} {artist}',
+  /** 可用占位符:{title} {singer} {lang} {tags} */
+  orderTemplate: '点歌 {title} {singer}',
 }
 
 export function formatOrder(song: Song): string {
   return siteConfig.orderTemplate
     .replaceAll('{title}', song.title)
-    .replaceAll('{artist}', song.artist)
-    .replaceAll('{language}', song.language)
-    .replaceAll('{genres}', song.genres.join('、'))
+    .replaceAll('{singer}', song.singer)
+    .replaceAll('{lang}', song.lang)
+    .replaceAll('{tags}', songTags(song).join('、'))
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Song } from '@/types'
+import { songTags } from '@/utils/songs'
 
 defineProps<{
   song: Song
@@ -63,17 +64,17 @@ function colorStyle(key: string) {
           {{ song.title }}
         </h3>
       <div class="shrink-0 flex items-center gap-6px">
-        <span class="text-13px font-bold text-brand-strong tracking-wide">{{ song.language }}</span>
+        <span class="text-13px font-bold text-brand-strong tracking-wide">{{ song.lang }}</span>
         <span v-if="song.sc" class="text-12px font-bold text-error" :title="`点歌需要 ${song.sc} SC`">
           {{ song.sc }} SC
         </span>
       </div>
       </div>
       <div class="mt-8px flex items-center justify-between gap-8px">
-        <p class="min-w-0 text-13px text-text-secondary truncate" :title="song.artist">{{ song.artist }}</p>
+        <p class="min-w-0 text-13px text-text-secondary truncate" :title="song.singer">{{ song.singer }}</p>
         <div class="shrink-0 flex gap-6px">
-          <span v-for="genre in song.genres" :key="genre" class="song-tag" :style="colorStyle(genre)">
-            {{ genre }}
+          <span v-for="tag in songTags(song)" :key="tag" class="song-tag" :style="colorStyle(tag)">
+            {{ tag }}
           </span>
         </div>
       </div>

@@ -14,7 +14,6 @@
 ```bash
 npm run dev                    # 开发
 npm run build                  # vue-tsc 类型检查 + vite 构建 → dist/
-npm run convert -- <excel路径> # excel → src/data/songs.json(见下文数据流程)
 ```
 
 ## 目录结构
@@ -35,24 +34,21 @@ src/
     useToast.ts          # 模块级单例 toast
     useTheme.ts          # 亮暗主题:默认跟随系统,按钮循环「跟随系统→亮→暗」,localStorage 键 songlist-theme
   styles/tokens.css      # 全部设计 token(见下文)+ 全局 reset 兜底 + toast 过渡
-scripts/
-  convert.mjs            # excel → songs.json:按行序生成 id;语种归一化(LANGUAGE_ALIAS 表);
-                         # 「流行;苦情」拆成 genres 数组;excel 修改时间写为 updatedAt
 ```
 
 ## 数据流程
 
-数据主通道(自动):远端 qylive 的 songs.json 由 CF Worker(`songs-cache`)缓存 5 天后从同源
-`/api/songs.json` 提供,页面挂载时拉取、经 `src/utils/mapRemoteSongs.ts` 映射替换内置数据,
-失败时静默保留内置数据。Worker 代码与路由配置见 README「数据更新流程」。
+数据结构:前端直接消费远端(qylive)原生字段 `title/singer/lang/genre/style/sc`,
+不做任何字段转换;`id` 由 `src/utils/songs.ts` 的 `withIds` 在运行时按行序生成,
+仅用作 key 与随机排序,与外部编号解耦(见「打乱与编号」)。展示 tag 由 `songTags()`
+从 genre+style 实时合并拆分。
 
-兜底数据(手动,约每月):浏览器下载 qylive 的 songs.json 放到根目录 → `npm run sync` →
-提交 `src/data/songs.json`。映射字段:singer→artist、lang→language、genre+style→genres(去重)、
-sc→数值;`id` 按行序生成,页面展示编号与其解耦(见「打乱与编号」)。
+主通道(自动):远端 songs.json 由 CF Worker(`songs-cache`)缓存 5 天后从同源
+`/api/songs.json` 提供,页面挂载时拉取、`withIds` 替换内置数据,失败时静默保留。
+Worker 代码与路由配置见 README「数据更新流程」。
 
-遗留通道(应急):主播 excel(表头 歌名/歌手/语种/类型)→ `npm run convert -- <路径>`。
-
-`src/data/songs.json` 为生成物,不要手改。
+兜底数据(手动):浏览器下载 qylive 的 songs.json → **原样覆盖** `src/data/songs.json`
+(零转换)→ 提交推送。仓库内该文件内容应与远端文件完全一致。
 
 ## 设计系统(重要)
 

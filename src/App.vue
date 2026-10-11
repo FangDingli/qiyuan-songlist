@@ -2,9 +2,9 @@
 import { computed, onMounted, ref, shallowRef, watch } from 'vue'
 import { useElementSize, useWindowSize, useWindowScroll } from '@vueuse/core'
 import rawText from '@/data/songs.json?raw'
-import type { Song, SonglistData } from '@/types'
+import type { Song } from '@/types'
 import { formatOrder, siteConfig } from '@/config'
-import { mapRemoteSongs } from '@/utils/mapRemoteSongs'
+import { songTags, withIds } from '@/utils/songs'
 import SongCard from '@/components/SongCard.vue'
 import FilterPanel from '@/components/FilterPanel.vue'
 import MobileFilterBar from '@/components/MobileFilterBar.vue'
@@ -13,19 +13,17 @@ import { useClipboard } from '@/composables/useClipboard'
 import { useToast } from '@/composables/useToast'
 import { useTheme } from '@/composables/useTheme'
 
-// 内置数据:构建时打包,保证首屏瞬间渲染;挂载后异步拉取远端最新数据替换
-const bundled = JSON.parse(rawText) as SonglistData
-const songs = shallowRef<Song[]>(bundled.songs)
-const updatedAt = ref(bundled.updatedAt)
+// 内置数据:构建时打包原样远端 JSON,保证首屏瞬间渲染;挂载后异步拉取远端最新数据替换
+const songs = shallowRef<Song[]>(withIds(JSON.parse(rawText)))
+const updatedAt = ref('')
 
 onMounted(async () => {
   // 远端数据经 CF Worker 缓存后从同源 /api/songs.json 提供,失败时静默保持内置数据
   try {
     const res = await fetch('/api/songs.json', { cache: 'no-cache' })
     if (!res.ok) return
-    const mapped = mapRemoteSongs(await res.json())
-    songs.value = mapped.songs
-    updatedAt.value = mapped.updatedAt
+    songs.value = withIds(await res.json())
+    updatedAt.value = new Date().toISOString().slice(0, 10)
   } catch {
     /* 拉取失败不影响页面,保留内置数据 */
   }
@@ -71,8 +69,8 @@ function countBy(get: (s: Song) => string | string[]): Array<[string, number]> {
   return [...counter.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'zh'))
 }
 
-const languages = computed(() => countBy((s) => s.language))
-const genres = computed(() => countBy((s) => s.genres))
+const languages = computed(() => countBy((s) => s.lang))
+const genres = computed(() => countBy((s) => songTags(s)))
 
 const tags = computed(() => [
   ...languages.value.map(([name, count]) => ({ name, count, kind: 'language' as const })),
@@ -83,9 +81,9 @@ const filtered = computed(() => {
   const kw = keyword.value.trim().toLowerCase()
   const sel = selectedTag.value
   const list = songs.value.filter((song) => {
-    if (kw && !song.title.toLowerCase().includes(kw) && !song.artist.toLowerCase().includes(kw)) return false
+    if (kw && !song.title.toLowerCase().includes(kw) && !song.singer.toLowerCase().includes(kw)) return false
     if (sel) {
-      if (sel.kind === 'language' ? song.language !== sel.name : !song.genres.includes(sel.name)) return false
+      if (sel.kind === 'language' ? song.lang !== sel.name : !songTags(song).includes(sel.name)) return false
     }
     return true
   })
@@ -162,6 +160,11 @@ const visibleRows = computed(() => {
 })
 
 const showBackTop = computed(() => scrollY.value > winH.value * 0.6)
+
+/** 侧栏与页脚的数据说明:拉取过远端才显示更新日期 */
+const dataMeta = computed(
+  () => (updatedAt.value ? `数据更新于 ${updatedAt.value} · ` : '') + `共 ${songs.value.length} 首`,
+)
 
 function backToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -252,7 +255,7 @@ async function randomPick() {
             <RotatingDisc />
             <h2 class="mt-12px text-18px lh-28px font-bold text-text-primary">{{ siteConfig.title }}</h2>
             <p class="mt-8px text-13px text-text-secondary text-center px-8px">{{ siteConfig.subtitle }}</p>
-            <p class="mt-8px text-12px text-text-secondary">数据更新于 {{ updatedAt }} · 共 {{ songs.length }} 首</p>
+            <p class="mt-8px text-12px text-text-secondary">{{ dataMeta }}</p>
           </div>
 
           <div class="surface-card p-20px">
@@ -353,16 +356,16 @@ async function randomPick() {
               rel="noopener noreferrer"
               class="text-brand-strong hover:underline underline-offset-2px"
             >归墟丶</a>
-            · UI
+            · 鸣谢
             <a
               href="https://space.bilibili.com/94843915"
               target="_blank"
               rel="noopener noreferrer"
               class="text-brand-strong hover:underline underline-offset-2px"
             >来只奶茶</a>
-             · with GLM-5.3-Flash
+            (页面整体布局与 UI) · 由 GLM-5.3-Flash 编写
           </p>
-          <p class="mt-4px">数据更新于 {{ updatedAt }}</p>
+          <p class="mt-4px">{{ dataMeta }}</p>
         </footer>
       </main>
     </div>
